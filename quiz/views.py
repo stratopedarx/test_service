@@ -1,3 +1,21 @@
-from django.shortcuts import render
+from django.views import generic
+from django.contrib.auth import logout
+from django.http import HttpResponseRedirect
 
-# Create your views here.
+
+class UserProfileView(generic.ListView):
+    pass
+
+
+class LoginView(generic.TemplateView):
+    pass
+
+
+class LogoutView(generic.View):
+    def get(self, request):
+        logout(request)
+        return HttpResponseRedirect("/")
+
+
+class RegisterView(generic.FormView):
+    pass

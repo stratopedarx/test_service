@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Test yourself, man</title>
+        <script src="/static/home/js/urls.js"></script>
+        <script src="/static/home/js/jquery-2.1.4.min.js"></script>
+        <script src="/static/home/js/ajaxfix.js"></script>
+
+        <link rel="stylesheet" href="/static/home/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/home/css/bootstrap-theme.min.css">
+
+        <script src="/static/home/js/highcharts-custom.js"></script>
+
+        <link rel="stylesheet" href="/static/home/css/style.css"/>
+    </head>
+    <body>
+    {% block content %}
+    <!--for the child templates-->
+    {% endblock %}
+    <br/><br/><br/><br/><br/><br/>
+    {% block footer %}
+        {% include "home/bottom.html" %}
+    {% endblock %}
+    </body>
+</html>
