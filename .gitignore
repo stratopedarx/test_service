@@ -1,0 +1,6 @@
+*.py[co]
+.idea/*
+.env/*
+application/local_settings.py
+tmp/
+
