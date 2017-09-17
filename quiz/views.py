@@ -6,10 +6,11 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout, authenticate, login, get_user_model
 
-from .models import User
+from .models import User, Question, Option, TypeTest
 from quiz.forms.quiz.user import (LoginForm, RegisterForm, AddUserItemIntoGroupForm,
                                   RestorePasswordRequestForm)
 
@@ -58,9 +59,9 @@ class LogoutView(generic.View):
 
 
 class RegisterView(generic.FormView):
-    orm_class = RegisterForm
+    form_class = RegisterForm
     template_name = 'quiz/register.html'
-    # success_url = '/quiz/'
+    success_url = '/quiz/'
 
     @method_decorator(redirect_if_user_login)
     def dispatch(self, request, *args, **kwargs):
@@ -84,15 +85,16 @@ class RegisterSuccessView(generic.TemplateView):
 class UserProfileView(LoginRequiredMixin, generic.ListView):
     """Show list of available tests on the user page """
     template_name = 'quiz/home.html'
-    # model = ItemGroup
+    model = TypeTest
 
     def get_queryset(self):
-        # qs = super(UserProfileView, self).get_queryset()
-        # return qs.filter(user=self.request.user)
-        return 'user'
+        qs = super(UserProfileView, self).get_queryset()
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super(UserProfileView, self).get_context_data(**kwargs)
+        available_tests = super(UserProfileView, self).get_queryset()
+        context['tests'] = available_tests
         return context
 
 

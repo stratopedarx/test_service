@@ -8,8 +8,11 @@
 
 {% block user_content %}
 
-    {% block group_panel %}
 
-    {% endblock %}
+
+    {% for test in tests %}
+        <li>{{test}}</li>
+    {% endfor %}
+
 
 {% endblock %}
