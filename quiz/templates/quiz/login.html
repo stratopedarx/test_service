@@ -1,0 +1,23 @@
+{% extends 'quiz/base.html' %}
+{% load i18n %}
+
+{% block user_content %}
+    <ul class="errorlist">
+    {% for e in  errors %}
+       <li>{{ e }}</li>
+    {% endfor %}
+     </ul>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <input type="submit" class="btn btn-success" value="{% trans 'Login' %}">
+        <a href='{% url "quiz:register" %}' class="btn btn-success">{% trans 'Registration' %}  </a>
+        <a href='{% url "quiz:change_password" %}' class="btn btn-success">{% trans "Restore password" %}</a>
+    </form>
+    <br /> {# \n #}
+    <a href="https://vk.com/" class="btn">Login via VK</a>
+    <br />
+    <a href="https://www.google.ru/" class="btn">Login via Google+</a>
+    <br />
+    <a href="https://www.facebook.com" class="btn">Login via Facebook</a>
+{% endblock %}

@@ -36,8 +36,13 @@ ADMINS = (
 MANAGERS = ADMINS
 DEFAULT_FROM_EMAIL = 'stratopedarx@mail.ru'
 
-# Application definition
 
+AUTH_USER_MODEL = 'quiz.User'
+LOGIN_URL = '/quiz/login/'
+ROOT_URLCONF = 'application.urls'
+
+
+# Application definition
 INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'quiz.apps.QuizConfig',
