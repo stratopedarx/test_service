@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf.urls import url, include
 
 urlpatterns = [
-    url(r'^', include('home.urls'), name='home'),  # home/main page
+    url(r'^', include('home.urls'), name='home'),  # app for home page and system authorization
     url(r'^admin/', admin.site.urls),  # admin side
     url(r'^quiz/', include('quiz.urls'), name='quiz'),  # custom side
 ]

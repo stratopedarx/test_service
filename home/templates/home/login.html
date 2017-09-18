@@ -1,4 +1,4 @@
-{% extends 'quiz/base.html' %}
+{% extends 'home/base.html' %}
 {% load i18n %}
 
 {% block user_content %}
@@ -11,8 +11,8 @@
         {% csrf_token %}
         {{ form.as_table }}
         <input type="submit" class="btn btn-success" value="{% trans 'Login' %}">
-        <a href='{% url "quiz:register" %}' class="btn btn-success">{% trans 'Registration' %}  </a>
-        <a href='{% url "quiz:change_password" %}' class="btn btn-success">{% trans "Restore password" %}</a>
+        <a href='{% url "home:register" %}' class="btn btn-success">{% trans 'Registration' %}  </a>
+        <a href='{% url "home:change_password" %}' class="btn btn-success">{% trans "Restore password" %}</a>
     </form>
     <br /> {# \n #}
     <a href="https://vk.com/" class="btn">Login via VK</a>
