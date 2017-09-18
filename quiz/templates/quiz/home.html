@@ -3,15 +3,13 @@
 
 {% block left %}
     <br/>
-    {% trans "Your tests" %}
+    <h1>{% trans "Your tests:" %}</h1>
 {% endblock %}
 
 {% block user_content %}
 
-
-
-    {% for test in tests %}
-        <li>{{test}}</li>
+    {% for type_test in type_tests %}
+        <li><h1><a href="{% url 'quiz:quiz_test' type_test.id 1 %}">{{type_test}}</a></h1></li>
     {% endfor %}
 
 

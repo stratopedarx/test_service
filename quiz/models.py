@@ -58,9 +58,17 @@ class Question(models.Model):
 
 class Option(models.Model):
     """Model for test options."""
-    option = models.CharField(max_length=200)
+    option_text = models.CharField(max_length=200)
     truth = models.BooleanField()  # can be False if option is not right or True if is truth
     question = models.ForeignKey(Question, on_delete=models.CASCADE)  # the communication is many-to-one
 
     def __str__(self):
         return 'Option is {} - {}'.format(self.option, self.truth)
+
+
+class Result(models.Model):
+    result = models.IntegerField(default=0)
+    right_answer = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.result
