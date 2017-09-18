@@ -1,0 +1,9 @@
+{% extends "home/base.html" %}
+
+{% block user_content %}
+
+<h1>Your results are below:</h1>
+<h1>You answered correctly to {{ right_answers }} questions out of {{ results }}</h1>>
+<h2>It is {{ percentage }} %</h2>>
+<p class="fig"><img src="/static/quiz/img/good_boy.jpg"/><p>
+{% endblock %}

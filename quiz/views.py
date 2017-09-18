@@ -1,12 +1,16 @@
 import random
 
+from django.contrib import auth
 from django.views import generic
+from django.http.response import Http404
 from django.contrib.auth import get_user_model
 from django.shortcuts import render_to_response
+from django.template.context_processors import csrf
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from home.models import User
-from .models import Question, Option, TypeTest, Result
+from .models import Question, Option, TypeTest, CurrentUserResult, UserResult
 
 
 class UserProfileView(LoginRequiredMixin, generic.ListView):
@@ -30,44 +34,64 @@ class UserSettingsView(LoginRequiredMixin, generic.DetailView):
         return User.objects.get(id=self.request.user.id)
 
 
-class QuizTestView(LoginRequiredMixin, generic.ListView):
-    template_name = 'quiz/test.html'
-    model = Option
+def get_random_question_and_options(type_test_id):
+    """Takes random question and related options from DataBase."""
+    # TODO: fetches only those questions which are not passed by the user
+    questions = list(Question.objects.filter(type_test_id=type_test_id))[:10]
+    random.shuffle(questions)
+    try:
+        question = questions[0]  # temporary solution. Unfortunately we can get the same questions
+    except IndexError as ex:
+        raise Http404('Question does nor exist!')
 
-    def get_context_data(self, **kwargs):
-        context = super(QuizTestView, self).get_context_data(**kwargs)
-        all_options = Option.objects.filter(question__type_test_id=self.kwargs['type_test_id'])
-        all_questions = Question.objects.filter(type_test_id=self.kwargs['type_test_id'])
-        random.shuffle(list(all_questions))
-        question = all_questions[0]
-        context['options'] = all_options.filter(question_id=question.id)
-        context['question'] = question
-
-        return context
-
-
-def quiz_test_view(request, type_test_id, page):
-    context = {}
-    number_questions = 10  # default number of questions
-    questions = list(Question.objects.filter(type_test_id=type_test_id)[:number_questions])  # fetch questions
-    random.shuffle(questions)  # shuffle list of questions
-
+    # fetches related options
     options = Option.objects.filter(question_id=question.id)
-    page = int(page)
-    page += 1
-    context['options'] = options
-    # context['question'] = question
-    context['page'] = page
+
+    return {'question': question, 'options': options}
+
+
+def quiz_test_view(request, type_test_id):
+    """This view shows the page with question and options."""
+    context = {}
+    context.update(csrf(request))
+    user_id = auth.get_user(request).id
+
+    if request.POST:
+        # continue the test until we get 5 questions
+        try:
+            current_user_result = CurrentUserResult.objects.get(user_id=user_id)
+        except ObjectDoesNotExist as ex:
+            raise Http404('User {} does nor exist in CurrentUserResult model!'.format(user_id))
+
+        current_user_result.results += 1  # increase the number of questions
+        if Option.objects.get(id=request.POST['option']).truth:  # check the truth of the answer
+            current_user_result.right_answers += 1
+        current_user_result.save()
+
+        if current_user_result.results >= 5:
+            # prepare result page for the user
+            right_answers = current_user_result.right_answers
+            results = current_user_result.results
+            context = {
+                'right_answers': right_answers,
+                'results': results,
+                'percentage': (right_answers / results) * 100
+            }
+            current_user_result.delete()  # delete temporary result
+            return render_to_response('quiz/result.html', context)
+    else:
+        # start to test
+        try:
+            # TODO: Fix this point
+            current_user_result = CurrentUserResult.objects.create(user_id=user_id)
+        except Exception as ex:
+            # if this user is already exist delete him and create new one
+            CurrentUserResult.objects.get(user_id=user_id).delete()
+            current_user_result = CurrentUserResult.objects.create(user_id=user_id)
+        current_user_result.save()
+
+    context['type_test_id'] = type_test_id
+    context.update(get_random_question_and_options(type_test_id))
+
     return render_to_response('quiz/test.html', context)
 
-
-def save_answer(request):
-    option_id = request.POST['option']
-    result = Result.objects.create()
-    result.result += 1
-    if Option.objects.get(id=option_id).truth:
-        result.right_answer += 1
-    result.save()
-    if result.result == 10:
-        return 'result page'
-    return ''

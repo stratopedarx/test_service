@@ -1,5 +1,7 @@
 from django.db import models
 
+from home.models import User
+
 
 class TypeTest(models.Model):
     """
@@ -31,9 +33,24 @@ class Option(models.Model):
         return 'Option is {} - {}'.format(self.option_text, self.truth)
 
 
-class Result(models.Model):
-    result = models.IntegerField(default=0)
-    right_answer = models.IntegerField(default=0)
+class UserResult(models.Model):
+    """This model stores information about questions which user has passed."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # many-to-one
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)  # many-to-one
+    right_question = models.BooleanField()  # True when user gave the correct answer
 
     def __str__(self):
-        return self.result
+        return self.question
+
+
+class CurrentUserResult(models.Model):
+    """
+    This model contains information about current test.
+    After test it will be deleted.
+    """
+    user_id = models.IntegerField(primary_key=True, default=0)  # store user_id
+    results = models.IntegerField(default=0)  # store the number of questions
+    right_answers = models.IntegerField(default=0)
+
+    def __str__(self):
+        return 'Correct answers of {} out of {}'.format(self.right_answers, self.results)

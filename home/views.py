@@ -19,7 +19,7 @@ def redirect_if_user_login(f):
     def wrap(request, *args, **kwargs):
         if request.user.is_authenticated():
             # return an absolute link
-            return HttpResponseRedirect(reverse('quiz:userprofile'))
+            return HttpResponseRedirect(reverse('quiz:user_profile'))
         else:
             return f(request, *args, **kwargs)
     return wrap
@@ -48,7 +48,7 @@ class LoginView(generic.TemplateView):
             user = authenticate(**data)
             if user and user.is_active:
                 login(request, user)
-                _next = request.GET.get('next', reverse('quiz:userprofile'))
+                _next = request.GET.get('next', reverse('quiz:user_profile'))
                 return HttpResponseRedirect(_next, status=301)
             else:
                 errors = [_('LOGIN FAILD')]

@@ -1,4 +1,4 @@
-{% extends "quiz/base.html" %}
+{% extends "home/base.html" %}
 
 {% block user_content %}
 
@@ -6,7 +6,7 @@
 
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-    <form action="{% url 'quiz:submit' %}" method="post">
+    <form action="{% url 'quiz:quiz_test' type_test_id %}" method="post">
     {% csrf_token %}
     {% for option in options.all %}
         <input type="radio" name="option" id="option{{ forloop.counter }}" value="{{ option.id }}" />
