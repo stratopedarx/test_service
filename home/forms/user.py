@@ -1,10 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.forms import (UserCreationForm as DjangoUserCreationForm,
-                                       UserChangeForm as DjangoUserChangeForm)
-
-from quiz.models import User
 
 
 class LoginForm(forms.Form):
@@ -33,7 +29,7 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.ModelForm):
-    password =forms.CharField(
+    password = forms.CharField(
         max_length=32,
         widget=forms.PasswordInput(
             attrs={
@@ -71,26 +67,7 @@ class RegisterForm(forms.ModelForm):
                     'style': 'width: 350px;'
                 }),
         }
-
-
-class UserChangeForm(DjangoUserChangeForm):
-    class Meta:
-        model = User
-        exclude = ('date_joined',)
-
-
-class UserCreationForm(DjangoUserCreationForm):
-    class Meta:
-        model = User
-        fields = ('username',)
-
-
-class AddUserItemIntoGroupForm(forms.Form):
-    url = forms.URLField(
-        required=True,
-        widget=forms.URLInput(attrs={'required': True})
-    )
-    group_id = forms.IntegerField(required=True, widget=forms.HiddenInput)
+        fields = ('username', 'password', 'email')
 
 
 class RestorePasswordRequestForm(forms.Form):

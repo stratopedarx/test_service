@@ -1,4 +1,4 @@
-{% extends "home/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 <div id="head">
@@ -8,7 +8,8 @@
     <img src="/static/home/gif/smail.gif" title="Test yourself, man" alt="Test yourself, man" style="margin-top: 10px;"/>
 
     <div class="form">
-        <form action="{% url 'quiz:login' %}" class="form form-inline" method="post">{% csrf_token %}
+        <form action="{% url 'home:login' %}" class="form form-inline" method="post">
+            {% csrf_token %}
             <div class="form-group">
                 <input type="text" name="username" id="id_username" class="form-control" placeholder="Login" />
             </div>
@@ -26,7 +27,7 @@
             <br/>
             <a href="https://www.facebook.com">Login via Facebook</a>
             <br/>
-            <a href="{% url 'quiz:register' %}" class="btn reg">Registration</a>
+            <a href="{% url 'home:register' %}" class="btn reg">Registration</a>
         </div>
     </div>
 </div>
