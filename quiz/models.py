@@ -26,7 +26,7 @@ class Question(models.Model):
 class Option(models.Model):
     """Model for test options."""
     option_text = models.CharField(max_length=200)
-    truth = models.BooleanField()  # can be False if option is not right or True if is truth
+    truth = models.BooleanField(default=False)  # True if option is correct
     question = models.ForeignKey(Question, on_delete=models.CASCADE)  # many-to-one
 
     def __str__(self):
@@ -48,7 +48,7 @@ class CurrentUserResult(models.Model):
     This model contains information about current test.
     After test it will be deleted.
     """
-    user_id = models.IntegerField(primary_key=True, default=0)  # store user_id
+    user_id = models.IntegerField(primary_key=True, blank=False)  # store user_id
     results = models.IntegerField(default=1)  # store the number of questions
     right_answers = models.IntegerField(default=1)
 
