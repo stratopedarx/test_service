@@ -7,10 +7,9 @@ It runs under officially Django https://www.djangoproject.com/:
 
 * Django 1.11.5
 * Python 3.5.2
+* Ubuntu 16.04.3 LTS
 
 This tutorial passes through all the steps to build the app.
-
-Before reading this tutorial visit the official Django project website and read the tutorial on `how to write reusable apps <https://docs.djangoproject.com/en/1.11/intro/reusable-apps/>`_.
 
 
 Current features
@@ -80,15 +79,16 @@ How to launch the application on your local machie?
 * source .env/bin/activate
 
 3. Clone git repository
-* https://github.com/stratopedarx/test_service.git
-* cd test_service
+* git clone https://github.com/stratopedarx/test_service.git
+* cd test_service/
 
 4. Install all dependencies by running the following command:
 * pip install -r requirements.txt
 
-5. There are several commands which you will use to interact with migrations and Django’s handling of database schema:
+5. If you are going to use a new database sqlite3 run the following commands, if not then skip this step:
 * python manage.py makemigrations
 * python manage.py migrate
+* python manage.py createsuperuser
 
 6. Launch the application:
 * python manage.py runserver
