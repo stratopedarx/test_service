@@ -37,7 +37,7 @@ class UserResult(models.Model):
     """This model stores information about questions which user has passed."""
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # many-to-one
     question = models.ForeignKey(Question, on_delete=models.CASCADE)  # many-to-one
-    right_question = models.BooleanField()  # True when user gave the correct answer
+    right_question = models.BooleanField(default=False)  # True when user gave the correct answer
 
     def __str__(self):
         return self.question
@@ -49,8 +49,8 @@ class CurrentUserResult(models.Model):
     After test it will be deleted.
     """
     user_id = models.IntegerField(primary_key=True, default=0)  # store user_id
-    results = models.IntegerField(default=0)  # store the number of questions
-    right_answers = models.IntegerField(default=0)
+    results = models.IntegerField(default=1)  # store the number of questions
+    right_answers = models.IntegerField(default=1)
 
     def __str__(self):
         return 'Correct answers of {} out of {}'.format(self.right_answers, self.results)

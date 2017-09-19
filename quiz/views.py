@@ -2,12 +2,13 @@ import random
 
 from django.contrib import auth
 from django.views import generic
+from django.db import IntegrityError
 from django.http.response import Http404
 from django.contrib.auth import get_user_model
-from django.shortcuts import render_to_response
 from django.template.context_processors import csrf
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render_to_response, get_object_or_404
 
 from home.models import User
 from .models import Question, Option, TypeTest, CurrentUserResult, UserResult
@@ -56,22 +57,20 @@ def quiz_test_view(request, type_test_id):
     context.update(csrf(request))
     user_id = auth.get_user(request).id
 
-    if request.POST:
+    if request.method == 'POST' and request.POST.get('option') is not None:
         # continue the test until we get 5 questions
-        try:
-            current_user_result = CurrentUserResult.objects.get(user_id=user_id)
-        except ObjectDoesNotExist as ex:
-            raise Http404('User {} does nor exist in CurrentUserResult model!'.format(user_id))
-
+        current_user_result = get_object_or_404(CurrentUserResult, user_id=user_id)
         current_user_result.results += 1  # increase the number of questions
-        if Option.objects.get(id=request.POST['option']).truth:  # check the truth of the answer
+
+        # check all choices
+        if all(Option.objects.get(id=o).truth for o in request.POST.getlist('option')):
             current_user_result.right_answers += 1
         current_user_result.save()
 
-        if current_user_result.results >= 5:
+        if current_user_result.results > 5:
             # prepare result page for the user
-            right_answers = current_user_result.right_answers
-            results = current_user_result.results
+            right_answers = current_user_result.right_answers - 1
+            results = current_user_result.results - 1
             context = {
                 'right_answers': right_answers,
                 'results': results,
@@ -79,18 +78,22 @@ def quiz_test_view(request, type_test_id):
             }
             current_user_result.delete()  # delete temporary result
             return render_to_response('quiz/result.html', context)
+    elif request.method == 'POST' and request.POST.get('option') is None:
+        current_user_result = CurrentUserResult.objects.get_or_create(user_id=user_id)[0]
+        context['error_message'] = 'The option was not chosen. Try again.'
     else:
-        # start to test
+        # start to test, create temporary current user result
         try:
-            # TODO: Fix this point
+            current_user_result = CurrentUserResult.objects.get(user_id=user_id)
+        except CurrentUserResult.DoesNotExist as ex:
+            [c.delete() for c in CurrentUserResult.objects.all()]  # clean database
             current_user_result = CurrentUserResult.objects.create(user_id=user_id)
-        except Exception as ex:
-            # if this user is already exist delete him and create new one
-            CurrentUserResult.objects.get(user_id=user_id).delete()
-            current_user_result = CurrentUserResult.objects.create(user_id=user_id)
-        current_user_result.save()
+
+        if current_user_result.results != 1:
+            context['error_message'] = 'The option was not chosen. Try again.'
 
     context['type_test_id'] = type_test_id
+    context['num_question'] = current_user_result.results
     context.update(get_random_question_and_options(type_test_id))
 
     return render_to_response('quiz/test.html', context)

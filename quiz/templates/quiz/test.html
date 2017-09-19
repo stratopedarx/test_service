@@ -2,17 +2,17 @@
 
 {% block user_content %}
 
-<h1>{{ question.question_text }}</h1>
-
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<h1>{{ num_question }}. {{ question.question_text }}</h1>
 
     <form action="{% url 'quiz:quiz_test' type_test_id %}" method="post">
     {% csrf_token %}
     {% for option in options.all %}
-        <input type="radio" name="option" id="option{{ forloop.counter }}" value="{{ option.id }}" />
+        <input type="checkbox" name="option" id="option{{ forloop.counter }}" value="{{ option.id }}" />
         <label for="option{{ forloop.counter }}">{{ option.option_text }}</label><br />
     {% endfor %}
     <input type="submit" value="next" />
     </form>
+
+{% if error_message %}<h2><p><strong>{{ error_message }}</strong></p></h2>{% endif %}
 
 {% endblock %}
