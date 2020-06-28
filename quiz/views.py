@@ -2,16 +2,14 @@ import random
 
 from django.contrib import auth
 from django.views import generic
-from django.db import IntegrityError
 from django.http.response import Http404
 from django.contrib.auth import get_user_model
 from django.template.context_processors import csrf
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
 from home.models import User
-from .models import Question, Option, TypeTest, CurrentUserResult, UserResult
+from .models import Question, Option, TypeTest, CurrentUserResult
 
 
 class UserProfileView(LoginRequiredMixin, generic.ListView):
@@ -77,7 +75,7 @@ def quiz_test_view(request, type_test_id):
                 'percentage': (right_answers / results) * 100
             }
             current_user_result.delete()  # delete temporary result
-            return render_to_response('quiz/result.html', context)
+            return render('quiz/result.html', context)
     elif request.method == 'POST' and request.POST.get('option') is None:
         current_user_result = CurrentUserResult.objects.get_or_create(user_id=user_id)[0]
         context['error_message'] = 'The option was not chosen. Try again.'
@@ -96,5 +94,4 @@ def quiz_test_view(request, type_test_id):
     context['num_question'] = current_user_result.results
     context.update(get_random_question_and_options(type_test_id))
 
-    return render_to_response('quiz/test.html', context)
-
+    return render('quiz/test.html', context)

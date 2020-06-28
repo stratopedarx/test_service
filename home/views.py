@@ -1,9 +1,9 @@
 import random
 import string
 
+from django.urls import reverse
 from django.views import generic
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
