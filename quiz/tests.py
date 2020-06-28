@@ -1,8 +1,5 @@
 from django.test import TestCase
-from django.core.urlresolvers import reverse
-from django.test.client import RequestFactory
 
-from .views import UserProfileView
 from .models import TypeTest, Question, Option, CurrentUserResult
 
 
@@ -79,9 +76,6 @@ class TestCurrentUserResult(TestCase):
 
     def test_current_user_result_get_by_id(self):
         self.assertEqual(CurrentUserResult.objects.get(user_id=1), self.current_user_result)
-
-    def test_current_user_result_raises_does_not_exist(self):
-        self.assertRaises(CurrentUserResult.DoesNotExist, user_id=2)
 
     def test_current_user_result_str_format(self):
         self.assertEqual(self.current_user_result.__str__(), 'Correct answers of 1 out of 1')

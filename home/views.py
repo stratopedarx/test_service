@@ -17,7 +17,7 @@ from home.forms.user import LoginForm, RegisterForm, RestorePasswordRequestForm
 def redirect_if_user_login(f):
     # Redirects from home and register pages if the user is already authorized
     def wrap(request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             # return an absolute link
             return HttpResponseRedirect(reverse('quiz:user_profile'))
         else:

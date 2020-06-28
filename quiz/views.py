@@ -61,7 +61,7 @@ def quiz_test_view(request, type_test_id):
         current_user_result.results += 1  # increase the number of questions
 
         # check all choices
-        if all(Option.objects.get(id=o).truth for o in request.POST.getlist('option')):
+        if all(Option.objects.get(id=option).truth for option in request.POST.getlist('option')):
             current_user_result.right_answers += 1
         current_user_result.save()
 
@@ -75,7 +75,8 @@ def quiz_test_view(request, type_test_id):
                 'percentage': (right_answers / results) * 100
             }
             current_user_result.delete()  # delete temporary result
-            return render('quiz/result.html', context)
+            return render(request, 'quiz/result.html', context)
+
     elif request.method == 'POST' and request.POST.get('option') is None:
         current_user_result = CurrentUserResult.objects.get_or_create(user_id=user_id)[0]
         context['error_message'] = 'The option was not chosen. Try again.'
@@ -94,4 +95,4 @@ def quiz_test_view(request, type_test_id):
     context['num_question'] = current_user_result.results
     context.update(get_random_question_and_options(type_test_id))
 
-    return render('quiz/test.html', context)
+    return render(request, 'quiz/test.html', context)
