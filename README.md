@@ -5,9 +5,9 @@ Application is a simple django app that provides the opportunity to take tests i
 
 It runs under officially Django https://www.djangoproject.com/:
 
-* Django 1.11.5
-* Python 3.5.2
-* Ubuntu 16.04.3 LTS
+* Django 3.0.7
+* Python 3.8.3
+* Linux
 
 This tutorial passes through all the steps to build the app.
 
